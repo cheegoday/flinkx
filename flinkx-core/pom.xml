@@ -204,7 +204,7 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <delete dir = "${basedir}/../syncplugins"/>
+                                <!--<delete dir = "${basedir}/../syncplugins"/>-->
                                 <copy todir="${basedir}/../syncplugins/">
                                     <fileset dir="target/">
                                         <include name="${project.name}-${project.version}.jar" />

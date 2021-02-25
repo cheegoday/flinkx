@@ -130,9 +130,9 @@ public class AccumulatorCollector {
                 monitorUrls.add(url);
             }
         }
-        if(DtLogger.isEnableDebug()){
-            LOG.debug("monitorUrls = {}", gson.toJson(monitorUrls));
-        }
+//        if(DtLogger.isEnableDebug()){
+//            LOG.debug("monitorUrls = {}", gson.toJson(monitorUrls));
+//        }
     }
 
     private void checkMonitorUrlIsValid(){

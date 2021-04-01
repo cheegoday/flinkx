@@ -19,7 +19,7 @@
         <!--******离线******-->
         <module>flinkx-rdb</module>
         <module>flinkx-mysql</module>
-        <module>flinkx-polardb</module>
+        <!--<module>flinkx-polardb</module>-->
         <module>flinkx-oracle</module>
         <module>flinkx-sqlserver</module>
         <module>flinkx-postgresql</module>
@@ -27,36 +27,36 @@
         <!--<module>flinkx-dm</module>-->
         <!--<module>flinkx-gbase</module>-->
         <module>flinkx-clickhouse</module>
-        <module>flinkx-saphana</module>
-        <module>flinkx-teradata</module>
+        <!--<module>flinkx-saphana</module>-->
+        <!--<module>flinkx-teradata</module>-->
         <module>flinkx-greenplum</module>
         <!--<module>flinkx-kingbase</module>-->
 
         <module>flinkx-hdfs</module>
         <module>flinkx-hive</module>
-        <module>flinkx-es</module>
+        <!--<module>flinkx-es</module>-->
         <module>flinkx-ftp</module>
-        <module>flinkx-odps</module>
+        <!--<module>flinkx-odps</module>-->
         <module>flinkx-hbase</module>
 <!--        <module>flinkx-phoenix</module>-->
         <!--<module>flinkx-phoenix5</module>-->
-        <module>flinkx-carbondata</module>
-        <module>flinkx-kudu</module>
-        <module>flinkx-cassandra</module>
+        <!--<module>flinkx-carbondata</module>-->
+        <!--<module>flinkx-kudu</module>-->
+        <!--<module>flinkx-cassandra</module>-->
 
-        <module>flinkx-redis</module>
-        <module>flinkx-mongodb</module>
+        <!--<module>flinkx-redis</module>-->
+        <!--<module>flinkx-mongodb</module>-->
 
         <!--******实时******-->
-        <module>flinkx-binlog</module>
-        <module>flinkx-kb</module>
+        <!--<module>flinkx-binlog</module>-->
+        <!--<module>flinkx-kb</module>-->
         <module>flinkx-kafka10</module>
         <module>flinkx-kafka11</module>
         <module>flinkx-kafka</module>
-        <module>flinkx-emqx</module>
-        <module>flinkx-pulsar</module>
-        <module>flinkx-pgwal</module>
-        <module>flinkx-restapi</module>
+        <!--<module>flinkx-emqx</module>-->
+        <!--<module>flinkx-pulsar</module>-->
+        <!--<module>flinkx-pgwal</module>-->
+        <!--<module>flinkx-restapi</module>-->
     </modules>
 
     <properties>
@@ -65,11 +65,18 @@
         <scala.binary.version>2.12</scala.binary.version>
         <hadoop.version>2.7.3</hadoop.version>
         <http.version>4.5.3</http.version>
+        <lombok.version>1.18.2</lombok.version>
         <dev.path>${basedir}/dev</dev.path>
         <package.name>release_1.11.0</package.name>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+
         <!--Hadoop-->
         <dependency>
             <groupId>org.apache.hadoop</groupId>

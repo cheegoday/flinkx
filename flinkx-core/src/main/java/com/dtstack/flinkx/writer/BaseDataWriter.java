@@ -20,10 +20,12 @@ package com.dtstack.flinkx.writer;
 
 import com.dtstack.flinkx.config.DataTransferConfig;
 import com.dtstack.flinkx.config.DirtyConfig;
+import com.dtstack.flinkx.config.ReaderConfig;
 import com.dtstack.flinkx.config.RestoreConfig;
 import com.dtstack.flinkx.reader.MetaColumn;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flink.api.common.io.OutputFormat;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -32,14 +34,14 @@ import com.dtstack.flinkx.streaming.api.functions.sink.DtOutputFormatSinkFunctio
 import org.apache.flink.types.Row;
 import org.apache.flink.util.Preconditions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Abstract specification of Writer Plugin
- *
+ * <p>
  * Company: www.dtstack.com
+ *
  * @author huyifan.zju@163.com
  */
 public abstract class BaseDataWriter {
@@ -59,6 +61,8 @@ public abstract class BaseDataWriter {
     protected RestoreConfig restoreConfig;
 
     protected List<String> srcCols = new ArrayList<>();
+
+    protected Map<String, List<String>> multiSrcCols = new HashMap<>();
 
     protected static ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -92,7 +96,14 @@ public abstract class BaseDataWriter {
         }
 
         List columns = config.getJob().getContent().get(0).getReader().getParameter().getColumn();
-        parseSrcColumnNames(columns);
+        Boolean multiSchema = config.getJob().getContent().get(0).getReader().getParameter().getMultiSchema();
+
+        // 从reader配置中获取表schema
+        ReaderConfig readerConfig = config.getJob().getContent().get(0).getReader();
+        List<ReaderConfig.ParameterConfig.ConnectionConfig> connectionConfigs = readerConfig.getParameter().getConnection();
+
+
+        parseSrcColumnNames(multiSchema, columns, connectionConfigs);
 
         if (restoreConfig.isStream()) {
             return;
@@ -108,7 +119,36 @@ public abstract class BaseDataWriter {
         }
     }
 
-    private void parseSrcColumnNames(List columns) {
+    @Data
+    public class MultiSchema {
+        private String table;
+        private List<String> column;
+    }
+
+
+    protected ArrayList<MultiSchema> buildConnections(List<ReaderConfig.ParameterConfig.ConnectionConfig> connectionConfigs) {
+        ArrayList<MultiSchema> schemaList = new ArrayList<>(connectionConfigs.size());
+        for (ReaderConfig.ParameterConfig.ConnectionConfig connectionConfig : connectionConfigs) {
+            List<String> column = connectionConfig.getColumn();
+            for (String table : connectionConfig.getTable()) {
+                MultiSchema schema = new MultiSchema();
+                schema.setTable(table);
+                schema.setColumn(column);
+                schemaList.add(schema);
+            }
+        }
+        return schemaList;
+    }
+
+
+    private void parseSrcColumnNames(Boolean multiSchema, List columns, List<ReaderConfig.ParameterConfig.ConnectionConfig> connectionConfigs) {
+        if (multiSchema) {
+            ArrayList<MultiSchema> schemas = buildConnections(connectionConfigs);
+            for (MultiSchema schema : schemas) {
+                multiSrcCols.put(schema.getTable(), schema.getColumn());
+            }
+        }
+
         if (columns == null) {
             return;
         }
@@ -123,6 +163,7 @@ public abstract class BaseDataWriter {
             }
             return;
         }
+
 
         if (columns.get(0) instanceof Map) {
             for (Object column : columns) {

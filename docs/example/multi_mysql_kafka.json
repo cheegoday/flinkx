@@ -1,0 +1,93 @@
+{
+  "job": {
+    "content": [
+      {
+        "reader": {
+          "parameter": {
+            "username": "root",
+            "password": "root@1298",
+            "connection": [
+              {
+                "jdbcUrl": [
+                  "jdbc:mysql://192.168.90.145:3306/china?useSSL=false&useUnicode=true&characterEncoding=utf8"
+                ],
+                "table": [
+                  "pipeline_source"
+                ],
+                "column": [
+                  "id",
+                  "user_id",
+                  "name"
+                ]
+              },
+              {
+                "jdbcUrl": [
+                  "jdbc:mysql://192.168.90.145:3306/china?useSSL=false&useUnicode=true&characterEncoding=utf8"
+                ],
+                "table": [
+                  "pipeline_source_2"
+                ],
+                "column": [
+                  "id2",
+                  "user_id2",
+                  "name2"
+                ]
+              }
+            ],
+            "isMultiSchema": true,
+            "column": [
+              "id",
+              "user_id",
+              "name"
+            ],
+            "customSql": "",
+            "where": "",
+
+            "increColumn": "id",
+            "startLocation": "",
+            "queryTimeOut": 1000,
+            "requestAccumulatorInterval": 2
+          },
+          "name": "mysqldreader"
+        },
+        "writer": {
+          "parameter": {
+            "timezone": "UTC",
+            "topic": "djg0331",
+            "producerSettings": {
+              "zookeeper.connect": "192.168.90.71:2181",
+              "bootstrap.servers": "192.168.90.71:9092"
+            },
+            "tableFields": [
+              "id",
+              "user_id",
+              "name"
+            ]
+          },
+          "name": "kafka11writer"
+        }
+      }
+    ],
+    "setting": {
+      "speed": {
+        "channel": 1,
+        "bytes": 0
+      },
+      "errorLimit": {
+        "record": 100
+      },
+      "restore": {
+        "maxRowNumForCheckpoint": 0,
+        "isRestore": false,
+        "restoreColumnName": "id",
+        "restoreColumnIndex": 1
+      },
+      "log": {
+        "isLogger": false,
+        "level": "debug",
+        "path": "",
+        "pattern": ""
+      }
+    }
+  }
+}

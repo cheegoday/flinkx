@@ -60,20 +60,31 @@ public class ReaderConfig extends AbstractConfig {
     public static class ParameterConfig extends AbstractConfig {
         public static final String KEY_COLUMN_LIST = "column";
         public static final String KEY_CONNECTION_CONFIG_LIST = "connection";
+        public static final String IS_MULTI_SCHEMA = "isMultiSchema";
 
         List column;
         List<ConnectionConfig> connection;
+        Boolean isMultiSchema;
 
         public ParameterConfig(Map<String, Object> map) {
             super(map);
             column = (List) getVal(KEY_COLUMN_LIST);
             List<Map<String,Object>> connList = (List<Map<String, Object>>) getVal(KEY_CONNECTION_CONFIG_LIST);
+            isMultiSchema = (Boolean) map.get(IS_MULTI_SCHEMA);
             connection = new ArrayList<>();
             if(connList != null) {
                 for(Map<String,Object> conn : connList) {
                     connection.add(new ParameterConfig.ConnectionConfig(conn));
                 }
             }
+        }
+
+        public Boolean getMultiSchema() {
+            return isMultiSchema;
+        }
+
+        public void setMultiSchema(Boolean multiSchema) {
+            isMultiSchema = multiSchema;
         }
 
         public List<ConnectionConfig> getConnection() {
@@ -99,6 +110,7 @@ public class ReaderConfig extends AbstractConfig {
             public static final String KEY_JDBC_URL_LIST = "jdbcUrl";
             public static final String KEY_JDBC_USERNAME = "username";
             public static final String KEY_JDBC_PASSWORD = "password";
+            public static final String COLUMN = "column";
 
             public ConnectionConfig(Map<String, Object> map) {
                 super(map);
@@ -110,6 +122,14 @@ public class ReaderConfig extends AbstractConfig {
 
             public void setTable(List<String> table) {
                 setVal(KEY_TABLE_LIST, table);
+            }
+
+            public List<String> getColumn() {
+                return (List<String> ) getVal(COLUMN);
+            }
+
+            public void setColumn(List<String> schema){
+                setVal(COLUMN, schema);
             }
 
             public String getSchema(){
@@ -143,6 +163,8 @@ public class ReaderConfig extends AbstractConfig {
             public String getPassword(){
                 return (String)getVal(KEY_JDBC_PASSWORD);
             }
+
+
         }
 
     }

@@ -18,6 +18,7 @@
 package com.dtstack.flinkx.rdb;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author jiangbo
@@ -28,13 +29,34 @@ public class DataSource implements Serializable {
     private String userName;
     private String password;
     private String table;
+    private String[] schema;
     private boolean isSplitByKey;
     private Object[] parameterValues;
     private boolean isFinished;
+    private List<String> column;
+
+
+
 
     public DataSource() {
         this.isSplitByKey = false;
         this.isFinished = false;
+    }
+
+    public List<String> getColumn() {
+        return column;
+    }
+
+    public void setColumn(List<String> column) {
+        this.column = column;
+    }
+
+    public String[] getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String[] schema) {
+        this.schema = schema;
     }
 
     public String getJdbcUrl() {

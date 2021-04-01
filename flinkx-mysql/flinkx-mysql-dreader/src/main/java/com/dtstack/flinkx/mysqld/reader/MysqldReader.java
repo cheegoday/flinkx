@@ -29,6 +29,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @author toutian
@@ -54,13 +55,15 @@ public class MysqldReader extends DistributedJdbcDataReader {
             String curPassword = (connectionConfig.getPassword() == null || connectionConfig.getPassword().length() == 0)
                     ? password : connectionConfig.getPassword();
             String curJdbcUrl = DbUtil.formatJdbcUrl(connectionConfig.getJdbcUrl().get(0), Collections.singletonMap("zeroDateTimeBehavior", "convertToNull"));
+            List<String> column = connectionConfig.getColumn();
+
             for (String table : connectionConfig.getTable()) {
                 DataSource source = new DataSource();
                 source.setTable(table);
                 source.setUserName(curUsername);
                 source.setPassword(curPassword);
                 source.setJdbcUrl(curJdbcUrl);
-
+                source.setColumn(column);
                 sourceList.add(source);
             }
         }

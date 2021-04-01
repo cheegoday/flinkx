@@ -116,6 +116,20 @@ public class DistributedJdbcInputFormat extends BaseRichInputFormat {
         DataSource currentSource = sourceList.get(sourceIndex);
         currentConn = DbUtil.getConnection(currentSource.getJdbcUrl(), currentSource.getUserName(), currentSource.getPassword());
         currentConn.setAutoCommit(false);
+        // 兼容多表多schema的情况
+        if (! currentSource.getColumn().isEmpty()){
+            List<MetaColumn> specificMetaColumns = new ArrayList<>();
+            Integer index = 0;
+            for(String col : currentSource.getColumn()){
+                MetaColumn metaColumn = new MetaColumn();
+                metaColumn.setName(col);
+                metaColumn.setIndex(index++);
+                specificMetaColumns.add(metaColumn);
+            }
+            metaColumns = specificMetaColumns;
+        }
+
+
         String queryTemplate = new QuerySqlBuilder(databaseInterface, currentSource.getTable(),metaColumns,splitKey,
                 where, currentSource.isSplitByKey(), false, false).buildSql();
         currentStatement = currentConn.createStatement(resultSetType, resultSetConcurrency);
